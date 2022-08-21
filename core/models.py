@@ -1,15 +1,14 @@
 from django.db import models
 from . import constants
 from django.core.validators import MinLengthValidator, EmailValidator
-# Create your models here.
 
 
 class Contact(models.Model):
     cities = []
     states = []
-    for city in constants.CITIES:
-        cities.append((city, city))
     for state in constants.STATE_MAP:
+        for city in constants.STATE_MAP[state]:
+            cities.append((city, city))
         states.append((state, state))
 
     phone_number = models.CharField(max_length=10, validators=[
