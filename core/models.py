@@ -1,4 +1,3 @@
-from os import stat
 from django.db import models
 from . import constants
 from django.core.validators import MinLengthValidator, EmailValidator
