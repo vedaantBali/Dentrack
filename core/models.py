@@ -1,3 +1,4 @@
+from itertools import count, product
 from pyexpat import model
 from django.db import models
 from . import constants
@@ -30,10 +31,19 @@ class Contact(models.Model):
         return self.email_id
 
 
+class Inventory(models.Model):
+    owner = models.OneToOneField('Dentist', on_delete=models.DO_NOTHING, related_name='owner')
+    items = models.ManyToManyField('Item')
+
+    def __str__(self) -> str:
+        return f'inventory_{self.owner}'
+
+
 class Dentist(models.Model):
     name = models.CharField(max_length=32)
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True)
+    inventory = models.OneToOneField(Inventory, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -48,6 +58,14 @@ class Company(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class Item(models.Model):
+    product = models.OneToOneField('Product', on_delete=models.DO_NOTHING)
+    count = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f'{self.product}_{self.count}_nos'
 
 
 class Product(models.Model):

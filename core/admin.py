@@ -18,4 +18,6 @@ class ContactAdmin(admin.ModelAdmin):
 admin.site.register(models.Dentist)
 admin.site.register(models.Company)
 admin.site.register(models.Product)
+admin.site.register(models.Item)
+admin.site.register(models.Inventory)
 admin.site.register(models.Contact, ContactAdmin)
