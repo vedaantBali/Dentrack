@@ -1,3 +1,9 @@
+UNITS = [
+    ('MG', 'Milligrams'),
+    ('G', 'Grams'),
+    ('ML', 'Milliliters')
+]
+
 STATE_MAP = {
     "Andaman & Nicobar Islands": [
         "Port Blair"

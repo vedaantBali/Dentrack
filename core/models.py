@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 from . import constants
 from django.core.validators import MinLengthValidator, EmailValidator
@@ -25,6 +26,9 @@ class Contact(models.Model):
         MinLengthValidator(6)
     ], null=True)
 
+    def __str__(self) -> str:
+        return self.email_id
+
 
 class Dentist(models.Model):
     name = models.CharField(max_length=32)
@@ -40,6 +44,19 @@ class Company(models.Model):
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True
     )
+    products = models.ManyToManyField('Product')
 
     def __str__(self) -> str:
         return self.name
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=64, blank=False)
+    price = models.IntegerField(blank=False)
+    quantity = models.IntegerField(blank=False)
+    unit = models.CharField(
+        max_length=16, choices=constants.UNITS, blank=False)
+    maker = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+
+    def __str__(self) -> str:
+        return f'{self.name}_{self.maker}'
