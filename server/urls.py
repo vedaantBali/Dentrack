@@ -7,3 +7,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(r'dt/b2b/gql', GraphQLView.as_view(graphiql=True)),
 ]
+admin.site.site_header = "Dentrack Tool Admin Dashboard"
+admin.site.site_title = "Dentrack Admin"
