@@ -1,16 +1,11 @@
 from django.db import models
 from django.conf import settings
-from . import constants
+from . import constants, utils
 from django.core.validators import MinLengthValidator, EmailValidator
 
 
 class Contact(models.Model):
-    cities = []
-    states = []
-    for state in constants.STATE_MAP:
-        for city in constants.STATE_MAP[state]:
-            cities.append((city, city))
-        states.append((state, state))
+    cities, states = utils.get_cities_states()
 
     phone_number = models.CharField(max_length=10, validators=[
         MinLengthValidator(10)
@@ -33,7 +28,7 @@ class Contact(models.Model):
 class Inventory(models.Model):
     owner = models.OneToOneField(
         'Dentist', on_delete=models.DO_NOTHING, related_name='owner')
-    items = models.ManyToManyField('Item')
+    items = models.ManyToManyField('Item', blank=True)
 
     def __str__(self) -> str:
         return f'inventory_{self.owner}'
@@ -59,7 +54,7 @@ class Company(models.Model):
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True
     )
-    products = models.ManyToManyField('Product')
+    products = models.ManyToManyField('Product', blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -84,7 +79,8 @@ class Product(models.Model):
 
 
 class ProductByCompany(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, null=True)
+    product = models.ForeignKey(
+        Product, on_delete=models.DO_NOTHING, null=True)
     maker = models.ForeignKey(Company, on_delete=models.DO_NOTHING, null=True)
     price = models.IntegerField()
 
@@ -105,3 +101,10 @@ class Auction(models.Model):
 
     class Meta:
         unique_together = ('dentist', 'product',)
+
+    def __str__(self) -> str:
+        if self.is_active:
+            active = "active"
+        else:
+            active = "inactive"
+        return f'{self.dentist}_{self.product}_{active}'
