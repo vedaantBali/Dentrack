@@ -75,11 +75,33 @@ class Item(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=64, blank=False)
-    list_price = models.IntegerField(blank=False)
     quantity = models.IntegerField(blank=False)
     unit = models.CharField(
         max_length=16, choices=constants.UNITS, blank=False)
-    maker = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
-        return f'{self.name}_{self.maker}'
+        return f'{self.name}'
+
+
+class ProductByCompany(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, null=True)
+    maker = models.ForeignKey(Company, on_delete=models.DO_NOTHING, null=True)
+    price = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f'{self.product}_{self.maker}'
+
+
+class Auction(models.Model):
+    dentist = models.ForeignKey(
+        Dentist, on_delete=models.DO_NOTHING, null=True)
+    product = models.ForeignKey(
+        Product, on_delete=models.DO_NOTHING, null=True)
+    companies = models.ManyToManyField(Company)
+    price = models.IntegerField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = ('dentist', 'product',)

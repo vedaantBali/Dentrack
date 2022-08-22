@@ -2,7 +2,7 @@ from .. import models
 from graphql import GraphQLError
 
 
-class DentistResolver:
+class DentistListResolver:
     def __call__(self, name, info, **kwargs):
         user = info.context.user
         id = kwargs.get("id")
