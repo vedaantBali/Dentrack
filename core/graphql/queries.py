@@ -6,5 +6,5 @@ class Query(graphene.ObjectType):
     dentists = graphene.List(
         types.DentistType,
         id=graphene.Int(),
-        resolver=resolvers.DentistResolver(),
+        resolver=resolvers.DentistListResolver(),
     )
