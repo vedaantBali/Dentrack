@@ -61,7 +61,7 @@ class Company(models.Model):
 
 
 class Item(models.Model):
-    product = models.OneToOneField('Product', on_delete=models.DO_NOTHING)
+    product = models.OneToOneField('ProductByCompany', on_delete=models.DO_NOTHING)
     count = models.IntegerField()
 
     def __str__(self) -> str:
