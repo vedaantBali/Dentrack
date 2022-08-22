@@ -1,6 +1,5 @@
-from itertools import count, product
-from pyexpat import model
 from django.db import models
+from django.conf import settings
 from . import constants
 from django.core.validators import MinLengthValidator, EmailValidator
 
@@ -32,7 +31,8 @@ class Contact(models.Model):
 
 
 class Inventory(models.Model):
-    owner = models.OneToOneField('Dentist', on_delete=models.DO_NOTHING, related_name='owner')
+    owner = models.OneToOneField(
+        'Dentist', on_delete=models.DO_NOTHING, related_name='owner')
     items = models.ManyToManyField('Item')
 
     def __str__(self) -> str:
@@ -40,16 +40,21 @@ class Inventory(models.Model):
 
 
 class Dentist(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=True)
     name = models.CharField(max_length=32)
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True)
-    inventory = models.OneToOneField(Inventory, on_delete=models.DO_NOTHING, null=True, blank=True)
+    inventory = models.OneToOneField(
+        Inventory, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
 
 
 class Company(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=True)
     name = models.CharField(max_length=32)
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True
@@ -70,7 +75,7 @@ class Item(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=64, blank=False)
-    price = models.IntegerField(blank=False)
+    list_price = models.IntegerField(blank=False)
     quantity = models.IntegerField(blank=False)
     unit = models.CharField(
         max_length=16, choices=constants.UNITS, blank=False)

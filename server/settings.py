@@ -8,6 +8,10 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+GRAPHENE = {
+    "SCHEMA": "core.graphql.schema.schema"
+}
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -17,7 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core'
+    'core',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
