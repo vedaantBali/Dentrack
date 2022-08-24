@@ -52,7 +52,7 @@ class Company(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, null=True)
     name = models.CharField(max_length=32)
     contact = models.OneToOneField(
-        Contact, on_delete=models.DO_NOTHING, blank=True, null=True
+        Contact, on_delete=models.DO_NOTHING, null=True
     )
     products = models.ManyToManyField('Product', blank=True)
 
@@ -61,7 +61,8 @@ class Company(models.Model):
 
 
 class Item(models.Model):
-    product = models.OneToOneField('ProductByCompany', on_delete=models.DO_NOTHING)
+    product = models.OneToOneField(
+        'ProductByCompany', on_delete=models.DO_NOTHING)
     count = models.IntegerField()
 
     def __str__(self) -> str:
