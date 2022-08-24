@@ -54,7 +54,7 @@ class Company(models.Model):
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True
     )
-    products = models.ManyToManyField('Product', blank=True)
+    products = models.ManyToManyField('ProductByCompany', blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -75,7 +75,7 @@ class Product(models.Model):
         max_length=16, choices=constants.UNITS, blank=False)
 
     def __str__(self) -> str:
-        return f'{self.name}'
+        return f'{self.name}_{self.quantity}_{self.unit}'
 
 
 class ProductByCompany(models.Model):

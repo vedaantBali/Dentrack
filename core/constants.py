@@ -2,7 +2,8 @@ UNITS = [
     ('MG', 'Milligrams'),
     ('G', 'Grams'),
     ('ML', 'Milliliters'),
-    ('M', 'Meters')
+    ('M', 'Meters'),
+    ('NOS', 'Nos.')
 ]
 
 STATE_MAP = {
