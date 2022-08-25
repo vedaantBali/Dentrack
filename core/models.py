@@ -9,10 +9,10 @@ class Contact(models.Model):
 
     phone_number = models.CharField(max_length=10, validators=[
         MinLengthValidator(10)
-    ], null=True)
+    ], null=True, unique=True)
     email_id = models.CharField(max_length=128, null=True, validators=[
         EmailValidator()
-    ])
+    ], unique=True)
     address_line_1 = models.CharField(max_length=32)
     address_line_2 = models.CharField(max_length=32, blank=True)
     city = models.CharField(choices=cities, max_length=64, null=True)
@@ -41,7 +41,7 @@ class Dentist(models.Model):
     contact = models.OneToOneField(
         Contact, on_delete=models.DO_NOTHING, blank=True, null=True)
     inventory = models.OneToOneField(
-        Inventory, on_delete=models.DO_NOTHING, null=True, blank=True)
+        Inventory, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.name
