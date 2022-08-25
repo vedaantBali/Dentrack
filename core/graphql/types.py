@@ -7,15 +7,18 @@ class DentistType(DjangoObjectType):
         model = models.Dentist
         fields = "__all__"
 
+
 class InventoryType(DjangoObjectType):
     class Meta:
         model = models.Inventory
         fields = "__all__"
 
+
 class ItemType(DjangoObjectType):
     class Meta:
         model = models.Item
         fields = ["id", "product", "count"]
+
 
 class ProductType(DjangoObjectType):
     class Meta:
