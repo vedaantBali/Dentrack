@@ -4,19 +4,16 @@ from core import models
 from core.management.commands.create_inventory import handle_new_inventories
 from .product_data import PRODUCTS
 
+
 def handle_setup_products():
     for product in PRODUCTS:
         try:
             models.Product.objects.get(
-                name=product["name"],
-                quantity=product["quantity"],
-                unit=product["unit"]
+                name=product["name"], quantity=product["quantity"], unit=product["unit"]
             )
         except models.Product.DoesNotExist:
             models.Product.objects.create(
-                name=product["name"],
-                quantity=product["quantity"],
-                unit=product["unit"]
+                name=product["name"], quantity=product["quantity"], unit=product["unit"]
             )
 
 

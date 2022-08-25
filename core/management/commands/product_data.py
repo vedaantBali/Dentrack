@@ -10,5 +10,5 @@ PRODUCTS = [
     {"name": "File", "quantity": 10, "unit": "NOS"},
     {"name": "File", "quantity": 10, "unit": "NOS"},
     {"name": "Composite", "quantity": 100, "unit": "G"},
-    {"name": "Mould", "quantity": 600, "unit": "G"}
+    {"name": "Mould", "quantity": 600, "unit": "G"},
 ]

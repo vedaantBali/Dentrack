@@ -10,6 +10,7 @@ def handle_link_products():
         company = models.Company.objects.get(id=new_company.id)
         company.products.add(product)
 
+
 class Command(BaseCommand):
     help = "Link ProductByCompany to Company"
 
