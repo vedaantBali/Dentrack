@@ -2,6 +2,19 @@ from django.core.management import BaseCommand
 from django.contrib.auth.models import User
 from core import models
 from core.management.commands.create_inventory import handle_new_inventories
+from .product_data import PRODUCTS
+
+
+def handle_setup_products():
+    for product in PRODUCTS:
+        try:
+            models.Product.objects.get(
+                name=product["name"], quantity=product["quantity"], unit=product["unit"]
+            )
+        except models.Product.DoesNotExist:
+            models.Product.objects.create(
+                name=product["name"], quantity=product["quantity"], unit=product["unit"]
+            )
 
 
 def handle_link_users():
@@ -93,4 +106,7 @@ class Command(BaseCommand):
         handle_give_permissions()
         handle_link_users()
         handle_new_inventories()
+        handle_setup_products()
+        # models.Dentist.objects.all().delete()
+        # models.Contact.objects.all().delete()
         return "Done."
