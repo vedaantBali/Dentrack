@@ -1,5 +1,4 @@
 import graphene
-from .. import models
 from . import types, resolvers
 
 
@@ -8,4 +7,10 @@ class Query(graphene.ObjectType):
         types.DentistType,
         id=graphene.Int(),
         resolver=resolvers.DentistListResolver(),
+    )
+
+    inventory_by_dentist = graphene.List(
+        types.InventoryType,
+        id=graphene.Int(),
+        resolver=resolvers.InventoryResolver(),
     )
