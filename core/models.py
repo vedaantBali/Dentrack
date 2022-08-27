@@ -133,7 +133,7 @@ class Auction(models.Model):
             active = "active"
         else:
             active = "inactive"
-        return f"{self.dentist}_{self.product}_{active}"
+        return f"{self.dentist}_{self.product}_{self.price}_{active}"
 
 
 class AuctionHistory(models.Model):
@@ -151,8 +151,13 @@ class AuctionHistory(models.Model):
                 self.index = last_index + 1
             else:
                 self.index = 1
-
+        if self.auction.price < self.bid_price:
+            return "Bid price should be less than current price"
+        auction = Auction.objects.get(id=self.auction.id)
+        auction.price = self.bid_price
+        auction.save()
         super().save(*args, **kwargs)
+
 
     def __str__(self) -> str:
         return f"{self.index}_{self.auction}_{self.bid_by}_{self.bid_price}"
