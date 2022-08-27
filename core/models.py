@@ -27,7 +27,7 @@ class Contact(models.Model):
 
 class Inventory(models.Model):
     owner = models.OneToOneField(
-        "Dentist", on_delete=models.DO_NOTHING, related_name="owner"
+        "Dentist", on_delete=models.CASCADE, related_name="owner"
     )
     items = models.ManyToManyField("Item", blank=True)
 
@@ -41,11 +41,20 @@ class Dentist(models.Model):
     )
     name = models.CharField(max_length=32)
     contact = models.OneToOneField(
-        Contact, on_delete=models.DO_NOTHING, blank=True, null=True
+        Contact, on_delete=models.CASCADE, blank=True, null=True
     )
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, null=True, blank=True
     )
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            super().save(*args, **kwargs)
+            new_inventory = Inventory.objects.create(
+                owner=self,
+            )
+            self.inventory = new_inventory
+        super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.name
@@ -58,6 +67,7 @@ class Company(models.Model):
     name = models.CharField(max_length=32)
     contact = models.OneToOneField(Contact, on_delete=models.DO_NOTHING, null=True)
     products = models.ManyToManyField("ProductByCompany", blank=True)
+    auctions = models.ManyToManyField("Auction")
 
     def __str__(self) -> str:
         return self.name
@@ -85,6 +95,11 @@ class ProductByCompany(models.Model):
     maker = models.ForeignKey(Company, on_delete=models.DO_NOTHING, null=True)
     price = models.IntegerField()
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        company = Company.objects.get(id=self.maker.id)
+        company.products.add(self)
+
     def __str__(self) -> str:
         return f"{self.product}_{self.maker}"
 
@@ -97,6 +112,15 @@ class Auction(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     is_active = models.BooleanField(default=False)
+    history = models.ManyToManyField(
+        "AuctionHistory", blank=True, related_name="auction_history"
+    )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        for company in self.companies.all():
+            auction_participant = Company.objects.get(id=company.id)
+            auction_participant.auctions.add(self)
 
     class Meta:
         unique_together = (
@@ -110,3 +134,25 @@ class Auction(models.Model):
         else:
             active = "inactive"
         return f"{self.dentist}_{self.product}_{active}"
+
+
+class AuctionHistory(models.Model):
+    auction = models.ForeignKey(Auction, on_delete=models.CASCADE, null=True)
+    bid_by = models.ForeignKey(Company, on_delete=models.CASCADE)
+    bid_price = models.IntegerField()
+    index = models.IntegerField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            last_index = AuctionHistory.objects.filter(auction=self.auction).aggregate(
+                largest=models.Max("index")
+            )["largest"]
+            if last_index is not None:
+                self.index = last_index + 1
+            else:
+                self.index = 1
+
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return f"{self.index}_{self.auction}_{self.bid_by}_{self.bid_price}"
