@@ -1,5 +1,6 @@
 from graphene_django import DjangoObjectType
 from .. import models
+import graphene
 
 
 class DentistType(DjangoObjectType):
@@ -23,4 +24,4 @@ class ItemType(DjangoObjectType):
 class ProductType(DjangoObjectType):
     class Meta:
         model = models.Product
-        exclude = ["item"]
+        fields = "__all__"
