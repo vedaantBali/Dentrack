@@ -46,6 +46,7 @@ class Dentist(models.Model):
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, null=True, blank=True
     )
+    orders = models.ManyToManyField("Order", related_name="dentist_order", blank=True)
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -68,6 +69,7 @@ class Company(models.Model):
     contact = models.OneToOneField(Contact, on_delete=models.DO_NOTHING, null=True)
     products = models.ManyToManyField("ProductByCompany", blank=True)
     auctions = models.ManyToManyField("Auction")
+    orders = models.ManyToManyField("Order", related_name="company_order", blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -158,6 +160,25 @@ class AuctionHistory(models.Model):
         auction.save()
         super().save(*args, **kwargs)
 
-
     def __str__(self) -> str:
         return f"{self.index}_{self.auction}_{self.bid_by}_{self.bid_price}"
+
+
+class Order(models.Model):
+    dentist = models.ForeignKey(Dentist, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item)
+    status = models.CharField(max_length=32, choices=constants.ORDER_STATUS, blank=True)
+    amount = models.IntegerField()
+
+    def __str__(self) -> str:
+        return f"{self.dentist}_{self.company}_{self.status}"
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.status = constants.ORDER_STATUS[0][0]
+        super().save(*args, **kwargs)
+        order_company = Company.objects.get(id=self.company.id)
+        order_company.orders.add(self)
+        order_dentist = Dentist.objects.get(id=self.dentist.id)
+        order_dentist.orders.add(self)
