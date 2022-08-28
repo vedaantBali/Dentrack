@@ -6,6 +6,16 @@ UNITS = [
     ('NOS', 'Nos.')
 ]
 
+ORDER_STATUS = [
+    ("PLACED", "Placed"),
+    ("RECEIVED", "Received"),
+    ("PROCESSED", "Processed"),
+    ("DISPATCHED", "Dispatched"),
+    ("IN_TRANSIT", "In Transit"),
+    ("DELIVERED", "Delivered"),
+    ("CANCELLED", "Cancelled"),
+]
+
 STATE_MAP = {
     "Andaman & Nicobar Islands": [
         "Port Blair"
