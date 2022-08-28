@@ -12,10 +12,11 @@ class DentistType(DjangoObjectType):
 class InventoryType(DjangoObjectType):
     class Meta:
         model = models.Inventory
-        fields = "__all__"
+        fields = ["owner", "items"]
 
 
 class ItemType(DjangoObjectType):
+    # product = graphene.List(models.Product)
     class Meta:
         model = models.Item
         fields = ["id", "product", "count"]

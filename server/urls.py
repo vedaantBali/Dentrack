@@ -6,7 +6,7 @@ from graphene_django.views import GraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(r'dt/b2b/gql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path(r'dt/gql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ]
 admin.site.site_header = "Dentrack Tool Admin Dashboard"
 admin.site.site_title = "Dentrack Admin"
