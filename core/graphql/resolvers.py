@@ -19,6 +19,5 @@ class DentistListResolver:
 class InventoryResolver:
     def __call__(self, name, info, **kwargs):
         this_user = info.context.user
-        dentist = models.Dentist.objects.get(name="dentist1")
-        query = models.Inventory.objects.get(owner=dentist)
+        query = models.Inventory.objects.get(owner__user=this_user)
         return query
