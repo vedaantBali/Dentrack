@@ -4,7 +4,7 @@ from . import models
 # Register your models here.
 
 
-class OrderAdmin(admin.TabularInline):
+class OrderInlineAdmin(admin.TabularInline):
     model = models.Order
 
     readonly_fields = [
@@ -14,11 +14,27 @@ class OrderAdmin(admin.TabularInline):
     ]
 
 
+class OrderAdmin(admin.ModelAdmin):
+    model = models.Order
+
+    readonly_fields = [
+        "company",
+        "dentist",
+        "items",
+        "amount",
+    ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj is None:
+            return ()
+        return self.readonly_fields
+
+
 class CompanyAdmin(admin.ModelAdmin):
     model = models.Company
 
     inlines = [
-        OrderAdmin,
+        OrderInlineAdmin,
     ]
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
@@ -47,5 +63,5 @@ admin.site.register(models.Inventory)
 admin.site.register(models.Auction)
 admin.site.register(models.ProductByCompany)
 admin.site.register(models.AuctionHistory)
-admin.site.register(models.Order)
+admin.site.register(models.Order, OrderAdmin)
 admin.site.register(models.Contact)

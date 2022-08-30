@@ -109,6 +109,7 @@ class ProductByCompany(models.Model):
 class Auction(models.Model):
     dentist = models.ForeignKey(Dentist, on_delete=models.DO_NOTHING, null=True)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, null=True)
+    product_count = models.IntegerField()
     companies = models.ManyToManyField(Company)
     price = models.IntegerField()
     start_date = models.DateField()
@@ -159,6 +160,7 @@ class AuctionHistory(models.Model):
         auction.price = self.bid_price
         auction.save()
         super().save(*args, **kwargs)
+        auction.history.add(self)
 
     def __str__(self) -> str:
         return f"{self.index}_{self.auction}_{self.bid_by}_{self.bid_price}"
